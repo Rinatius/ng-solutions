@@ -1,24 +1,39 @@
 (function (){
     'use strict';
     
-    angular.module('myFirstApp', [])
+    angular.module('LunchCheck', [])
     
-    .controller('MyFirstController', function ($scope) {
-        $scope.name = "";
-        $scope.numericValue = 0;
+    .controller('FoodController', FoodController);
+    
+    FoodController.$inject = ['$scope'];
+    function FoodController ($scope) {
+        $scope.message = "";
+        $scope.lunchMenu = "";
         
-        $scope.displayStringNumericValue = function () {
-            $scope.numericValue = calculateStringNumericValue($scope.name);
+        $scope.displayMessage = function () {
+            $scope.message = generateMessage($scope.lunchMenu);
         };
         
-        function calculateStringNumericValue (string) {
-            var numericValue = 0;
-            for (var i = 0; i < string.length; i++) {
-                numericValue += string.charCodeAt(i);
+        function generateMessage (string) {
+            var result = "";
+            
+            var numberOfItems = string.split(',')
+                                .filter(notEmptyOrSpace)
+                                .length;
+            if (numberOfItems > 3) {
+                result = "Too much!";
+            } else if (numberOfItems == 0) {
+                result = "Please enter data first";
+            } else {
+                result = "Enjoy!";
             };
-            $scope.debugNumericValue = "calculateNumericValue";
-            return numericValue;
+            
+            return result;
         };
-    });
+        
+        function notEmptyOrSpace(string) {
+            return /\S/.test(string);    
+        };
+    };
     
 })();
